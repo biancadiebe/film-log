@@ -1,0 +1,6 @@
+.venv
+__pycache__/
+*.pyc
+.env
+
+#nao vai pra dentro da imagem (docker)
