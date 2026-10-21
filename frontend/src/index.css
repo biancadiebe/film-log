@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@source "./App.tsx";
+@source "./components";
 
 @theme {
   --color-page: #1A131E;
