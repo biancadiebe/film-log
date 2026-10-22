@@ -17,6 +17,7 @@ The goal was to build a complete web application that connects a React frontend,
 #### Main page
 
 - Search for movies using TMDB and display results with titles, posters, and release dates.
+- Navigate search results with numbered pagination, including previous/next controls and ellipses for long page lists.
 - Show loading, empty, and error states during search.
 
 #### Movie details modal
@@ -28,6 +29,7 @@ The goal was to build a complete web application that connects a React frontend,
 #### Rated Movies page
 
 - List rated movies with their posters, titles, and scores.
+- Navigate rated movies using numbered pages.
 - Open a movie's details from the list.
 - Persist ratings in MongoDB.
 
@@ -37,13 +39,14 @@ The goal was to build a complete web application that connects a React frontend,
 
 ### Not implemented
 
-The following optional features from the assignment were left out to keep the work focused on completing the required end-to-end experience:
+The following optional features from the assignment are not implemented in this version:
 
-- **Pagination or infinite scrolling:** search results currently show the first page returned by TMDB; there are no controls to load more.
 - **Genre or year filters:** searches use a text query only.
 - **Authentication:** ratings are not associated with individual accounts; the list is shared by anyone using the same application and database.
 - **Caching:** movie data is requested from TMDB when needed and is not cached by the application.
 - **Automated application tests:** the backend test modules are still Django's default placeholders.
+
+Search results use numbered pagination provided by TMDB. The rated-movies list also uses numbered pagination, implemented in the frontend with eight cards per page from the ratings loaded by the backend.
 
 ## What is being evaluated
 
@@ -122,7 +125,9 @@ I chose MongoDB because it is a database I have been studying extensively at uni
 
 5. Open **http://localhost:3000** in your browser. The Django API is available at **http://localhost:8000/api**.
 
-The first run may take a few minutes while Docker downloads base images and installs dependencies. Keep the terminal open while using the application. Press `Ctrl+C` to stop the services; run `docker compose down` to stop and remove the containers.
+The first run may take a few minutes while Docker downloads base images and installs dependencies. Without `-d`, logs are shown in the terminal; keep it open while using the application and press `Ctrl+C` to stop the services.
+
+To start the containers in the background, use `docker compose up --build -d`. The `-d` option releases the terminal, but does not rebuild the images. To include recent code or Dockerfile changes, add `--build`, for example: `docker compose up --build -d`. If nothing has changed, use `docker compose up -d` to start the services again. To stop and remove the containers, run `docker compose down`.
 
 ## REST API
 

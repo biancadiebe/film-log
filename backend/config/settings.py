@@ -1,14 +1,3 @@
-"""
-Configurações do Django para o projeto config.
-
-Gerado por 'django-admin startproject' usando o Django 6.0.9.
-
-Para mais informações sobre este arquivo, consulte
-https://docs.djangoproject.com/en/6.0/topics/settings/
-
-Para ver a lista completa de configurações e seus valores, consulte
-https://docs.djangoproject.com/en/6.0/ref/settings/
-"""
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -20,7 +9,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 # Configurações iniciais de desenvolvimento — não são adequadas para produção.
-# Consulte https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # AVISO DE SEGURANÇA: mantenha em segredo a chave secreta usada em produção!
 SECRET_KEY = 'django-insecure-g8-$pgc&tz^$q4)5_eu61aj!#tb=-!w7on*l17m8j#xs(2enc_'
@@ -79,7 +67,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Banco de dados
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 #atualizando para o projeto do mongodb (filmlog)
 DATABASES = {
     "default": {
@@ -91,11 +78,9 @@ DATABASES = {
 }
 
 # Roteadores de banco de dados
-# https://docs.djangoproject.com/en/dev/ref/settings/#database-routers
 DATABASE_ROUTERS = ["django_mongodb_backend.routers.MongoRouter"]
 
 # Validação de senha
-# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {

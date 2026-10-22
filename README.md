@@ -17,6 +17,7 @@ O objetivo foi desenvolver uma aplicação web completa que conecta um frontend 
 #### Página principal
 
 - Buscar filmes no TMDB e exibir resultados com títulos, pôsteres e datas de lançamento.
+- Navegar pelos resultados com paginação numerada, incluindo controles de página anterior/próxima e reticências para listas longas.
 - Exibir estados de carregamento, resultados vazios e erros durante a busca.
 
 #### Modal de detalhes do filme
@@ -28,6 +29,7 @@ O objetivo foi desenvolver uma aplicação web completa que conecta um frontend 
 #### Página de filmes avaliados
 
 - Listar filmes avaliados com pôster, título e nota.
+- Navegar pelas avaliações usando páginas numeradas.
 - Abrir os detalhes de um filme a partir da lista.
 - Persistir as avaliações no MongoDB.
 
@@ -37,13 +39,14 @@ O objetivo foi desenvolver uma aplicação web completa que conecta um frontend 
 
 ### Não implementadas
 
-As funcionalidades opcionais abaixo foram deixadas de fora para manter o foco na implementação completa dos recursos obrigatórios:
+As funcionalidades opcionais abaixo não foram implementadas nesta versão:
 
-- **Paginação ou rolagem infinita:** os resultados exibem a primeira página retornada pelo TMDB; não há controles para carregar mais resultados.
 - **Filtros por gênero ou ano:** a busca usa apenas um termo de texto.
 - **Autenticação:** as avaliações não são associadas a contas individuais; qualquer pessoa que use a mesma aplicação e o mesmo banco de dados verá a mesma lista.
 - **Cache:** os dados dos filmes são consultados no TMDB quando necessário e não são armazenados em cache pela aplicação.
 - **Testes automatizados da aplicação:** os módulos de teste do backend ainda são os arquivos padrão do Django, sem testes específicos do projeto.
+
+A busca usa paginação numerada fornecida pelo TMDB. A lista de filmes avaliados também tem paginação numerada, feita no frontend com oito cards por página a partir das avaliações carregadas do backend.
 
 ## O que está sendo avaliado
 
@@ -122,7 +125,9 @@ Escolhi o MongoDB porque é um banco de dados que estou estudando bastante na fa
 
 5. Acesse **http://localhost:3000** no navegador. A API Django fica disponível em **http://localhost:8000/api**.
 
-Na primeira execução, o processo pode levar alguns minutos enquanto o Docker baixa as imagens-base e instala as dependências. Mantenha o terminal aberto enquanto usa a aplicação. Pressione `Ctrl+C` para parar os serviços; execute `docker compose down` para parar e remover os contêineres.
+Na primeira execução, o processo pode levar alguns minutos enquanto o Docker baixa as imagens-base e instala as dependências. Sem a opção `-d`, os logs aparecem no terminal; mantenha-o aberto enquanto usa a aplicação e pressione `Ctrl+C` para parar os serviços.
+
+Se preferir iniciar os contêineres em segundo plano, use `docker compose up --build -d`. A opção `-d` libera o terminal, mas não reconstrói as imagens. Para aplicar alterações recentes no código ou nos Dockerfiles, inclua `--build`, por exemplo: `docker compose up --build -d`. Se nada mudou, para iniciar os serviços novamente basta `docker compose up -d`. Para parar e remover os contêineres, execute `docker compose down`.
 
 ## API REST
 

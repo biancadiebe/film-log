@@ -1,6 +1,14 @@
 // Tipos do frontend alinhados ao JSON retornado pelos endpoints do backend.
 export type Page = 'buscar' | 'avaliados'
 
+//Resposta paginada
+export type MovieSearchResponsePages = {
+  page: number
+  total_pages: number
+  total_results: number
+  results: MovieSearchResult[]
+}
+
 export type MovieSearchResult = {
   id: number
   title: string

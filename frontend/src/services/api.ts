@@ -1,4 +1,4 @@
-import type { MovieDetails, MovieSearchResult, Rating } from "../data/types";
+import type { MovieDetails, MovieSearchResult, Rating, MovieSearchResponsePages } from "../data/types";
 
 // API do backend: configure VITE_API_BASE_URL para substituir a URL local de desenvolvimento.
 const API_BASE_URL = (
@@ -100,4 +100,32 @@ export async function deleteRating(tmdbId: number): Promise<void> {
 
 export function posterUrl(path: string | null, size = "w500"): string | null {
   return path ? `https://image.tmdb.org/t/p/${size}${path}` : null;
+}
+
+//SearchMovies recebe o num. da página, envia um page com o query da URL e retorna a resposta completa
+export async function searchMoviesPages(
+  query: string,
+  page = 1,
+  signal?: AbortSignal,
+): Promise<MovieSearchResponsePages> {
+  const params = new URLSearchParams({
+    query,
+    page: String(page),
+  });
+
+  const result = await request<MovieSearchResponsePages>(
+    `/movies/search/?${params.toString()}`,
+    { signal },
+  );
+
+  if (
+    !Array.isArray(result.results) ||
+    typeof result.page !== "number" ||
+    typeof result.total_pages !== "number" ||
+    typeof result.total_results !== "number"
+  ) {
+    throw new Error("A API retornou dados de paginação inválidos.");
+  }
+
+  return result;
 }

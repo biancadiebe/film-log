@@ -1,19 +1,48 @@
-import { useState, type FormEvent } from 'react'
-import { FiX } from 'react-icons/fi'
-import { Button } from './Button'
-import { MovieCard } from './MovieCard'
-import type { MovieSearchResult, Rating } from '../data/types'
+import { useState, type FormEvent } from "react";
+import { FiX } from "react-icons/fi";
+import { Button } from "./Button";
+import { MovieCard } from "./MovieCard";
+import type { MovieSearchResult, Rating } from "../data/types";
 
 type SearchSectionProps = {
-  results: MovieSearchResult[]
-  ratings: Rating[]
-  loading: boolean
-  detailsLoading: boolean
-  hasSearched: boolean
-  error: string | null
-  onSearch: (query: string) => void
-  onClearSearch: () => void
-  onSelectMovie: (movie: MovieSearchResult) => void
+  results: MovieSearchResult[];
+  ratings: Rating[];
+  loading: boolean;
+  detailsLoading: boolean;
+  hasSearched: boolean;
+  error: string | null;
+  onSearch: (query: string) => void;
+  onClearSearch: () => void;
+  onSelectMovie: (movie: MovieSearchResult) => void;
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+};
+
+//Adicioanndo os números da página
+function getPaginationItems(
+  currentPage: number,
+  totalPages: number,
+): (number | "ellipsis")[] {
+  const pages = [
+    ...new Set(
+      [1, currentPage - 1, currentPage, currentPage + 1, totalPages].filter(
+        (page) => page >= 1 && page <= totalPages,
+      ),
+    ),
+  ].sort((a, b) => a - b);
+
+  return pages.flatMap((page, index) => {
+    if (index === 0) return [page];
+
+    const previousPage = pages[index - 1];
+    const gap = page - previousPage;
+
+    if (gap === 2) return [previousPage + 1, page];
+    if (gap > 2) return ["ellipsis", page];
+
+    return [page];
+  });
 }
 
 //Seção inicial do front, com o texto de boas vindas e o formulário de pesquisa
@@ -27,12 +56,15 @@ export function SearchSection({
   onSearch,
   onClearSearch,
   onSelectMovie,
+  currentPage,
+  totalPages,
+  onPageChange,
 }: SearchSectionProps) {
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState("");
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    onSearch(query.trim())
+    event.preventDefault();
+    onSearch(query.trim());
   }
 
   return (
@@ -90,15 +122,15 @@ export function SearchSection({
               type="button"
               aria-label="Limpar busca"
               onClick={() => {
-                setQuery('')
-                onClearSearch()
+                setQuery("");
+                onClearSearch();
               }}
             >
               <FiX className="size-4" aria-hidden="true" />
             </button>
           )}
           <Button className="shrink-0" type="submit">
-            {loading ? 'Buscando...' : 'Buscar'}
+            {loading ? "Buscando..." : "Buscar"}
           </Button>
         </form>
 
@@ -123,19 +155,72 @@ export function SearchSection({
               {results.map((movie) => {
                 const rating = ratings.find(
                   (item) => item.tmdb_id === movie.id,
-                )
+                );
 
                 return (
                   <MovieCard
                     key={movie.id}
                     movie={movie}
                     score={rating?.score}
-                    label={`${rating ? 'Ver detalhes de' : 'Avaliar'} ${movie.title}`}
+                    label={`${rating ? "Ver detalhes de" : "Avaliar"} ${movie.title}`}
                     onClick={() => onSelectMovie(movie)}
                   />
-                )
+                );
               })}
             </div>
+            {totalPages > 1 && (
+              <nav
+                className="mt-8 flex flex-wrap items-center justify-center gap-2"
+                aria-label="Paginação dos resultados"
+              >
+                <button
+                  type="button"
+                  className="rounded-md border border-line px-3 py-2 text-sm text-cream disabled:cursor-not-allowed disabled:opacity-40"
+                  disabled={loading || currentPage === 1}
+                  onClick={() => onPageChange(currentPage - 1)}
+                >
+                  Anterior
+                </button>
+
+                {getPaginationItems(currentPage, totalPages).map(
+                  (item, index) =>
+                    item === "ellipsis" ? (
+                      <span
+                        key={`ellipsis-${index}`}
+                        className="px-1 text-muted"
+                        aria-hidden="true"
+                      >
+                        …
+                      </span>
+                    ) : (
+                      <button
+                        key={item}
+                        type="button"
+                        className={`min-w-10 rounded-md border px-3 py-2 text-sm ${
+                          item === currentPage
+                            ? "border-accent bg-accent text-white"
+                            : "border-line text-cream hover:bg-surface"
+                        }`}
+                        aria-label={`Página ${item}`}
+                        aria-current={item === currentPage ? "page" : undefined}
+                        disabled={loading}
+                        onClick={() => onPageChange(item)}
+                      >
+                        {item}
+                      </button>
+                    ),
+                )}
+
+                <button
+                  type="button"
+                  className="rounded-md border border-line px-3 py-2 text-sm text-cream disabled:cursor-not-allowed disabled:opacity-40"
+                  disabled={loading || currentPage === totalPages}
+                  onClick={() => onPageChange(currentPage + 1)}
+                >
+                  Próxima
+                </button>
+              </nav>
+            )}
           </div>
         )}
         {hasSearched && !loading && !error && results.length === 0 && (
@@ -145,5 +230,5 @@ export function SearchSection({
         )}
       </div>
     </section>
-  )
+  );
 }

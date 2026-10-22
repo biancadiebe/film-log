@@ -4,7 +4,7 @@ import {
   getMovieDetails,
   getRatings,
   saveRating,
-  searchMovies,
+  searchMoviesPages,
 } from "./services/api";
 import type {
   MovieDetails,
@@ -37,6 +37,9 @@ export default function App() {
   const [searchError, setSearchError] = useState<string | null>(null);
   const [detailsLoading, setDetailsLoading] = useState(false);
   const searchController = useRef<AbortController | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchPage, setSearchPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
 
   const [selectedMovie, setSelectedMovie] = useState<MovieDetails | null>(null);
   const [selectedRating, setSelectedRating] = useState<Rating | null>(null);
@@ -89,16 +92,27 @@ export default function App() {
     setModalError(null);
   }
 
-  async function handleSearch(query: string) {
+  async function handleSearch(query: string, page = 1) {
     searchController.current?.abort();
 
     if (!query) {
       searchController.current = null;
+      setSearchQuery("");
       setSearchResults([]);
+      setSearchPage(1);
+      setTotalPages(0);
       setSearchLoading(false);
       setHasSearched(false);
       setSearchError("Digite o título ou gênero que deseja buscar.");
       return;
+    }
+
+    const isNewQuery = query !== searchQuery;
+    setSearchQuery(query);
+
+    if (page === 1) {
+      setSearchPage(1);
+      if (isNewQuery) setTotalPages(0);
     }
 
     const controller = new AbortController();
@@ -106,9 +120,15 @@ export default function App() {
     setSearchLoading(true);
     setHasSearched(true);
     setSearchError(null);
+
     try {
-      const results = await searchMovies(query, controller.signal);
-      if (searchController.current === controller) setSearchResults(results);
+      const response = await searchMoviesPages(query, page, controller.signal);
+
+      if (searchController.current === controller) {
+        setSearchResults(response.results);
+        setSearchPage(response.page);
+        setTotalPages(response.total_pages);
+      }
     } catch (error) {
       if (controller.signal.aborted) return;
       setSearchResults([]);
@@ -128,6 +148,9 @@ export default function App() {
     setSearchLoading(false);
     setHasSearched(false);
     setSearchError(null);
+    setSearchQuery("");
+    setSearchPage(1);
+    setTotalPages(0);
   }
 
   async function handleSelectSearchResult(movie: MovieSearchResult) {
@@ -148,6 +171,13 @@ export default function App() {
       setSearchError(getErrorMessage(error));
     } finally {
       setDetailsLoading(false);
+    }
+  }
+
+  //Muadança de pagina
+  function handlePageChange(page: number) {
+    if (searchQuery && page >= 1 && page <= totalPages && page !== searchPage) {
+      void handleSearch(searchQuery, page);
     }
   }
 
@@ -233,6 +263,9 @@ export default function App() {
               onSearch={handleSearch}
               onClearSearch={handleClearSearch}
               onSelectMovie={handleSelectSearchResult}
+              currentPage={searchPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
             />
             {!hasSearched && <EmptyResultsSection />}
           </>
