@@ -1,9 +1,24 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from .tmdb import (
+    TMDBError,
+    TMDBNotFound,
+    get_movie_details,
+    get_movie_genres,
+    search_movies,
+)
 
-# Importa as funções e os erros que criamos no arquivo tmdb.py
-from .tmdb import TMDBError, TMDBNotFound, get_movie_details, search_movies
+#Lista de generos
+class MovieGenreListView(APIView):
+    def get(self, request):
+        try:
+            return Response(get_movie_genres())
+        except TMDBError:
+            return Response(
+                {"detail": "Could not fetch genres from TMDB."},
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
 
 #Le a busca na URL, chama a classe search_movies e retorna a lista de filmes em JSON
 class MovieSearchView(APIView):

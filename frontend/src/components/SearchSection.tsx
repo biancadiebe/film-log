@@ -2,7 +2,8 @@ import { useMemo, useState, type FormEvent } from "react";
 import { FiX } from "react-icons/fi";
 import { Button } from "./Button";
 import { MovieCard } from "./MovieCard";
-import type { MovieSearchResult, Rating } from "../data/types";
+import { SelectInput } from "./SelectInput";
+import type { MovieGenre, MovieSearchResult, Rating } from "../data/types";
 
 type SearchSectionProps = {
   results: MovieSearchResult[];
@@ -17,6 +18,9 @@ type SearchSectionProps = {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  genres: MovieGenre[];
+  genresLoading: boolean;
+  genresError: string | null;
 };
 
 type MovieSortOrder = "relevance" | "newest" | "oldest";
@@ -52,6 +56,9 @@ export function SearchSection({
   results,
   ratings,
   loading,
+  genres,
+  genresLoading,
+  genresError,
   detailsLoading,
   hasSearched,
   error,
@@ -64,11 +71,21 @@ export function SearchSection({
 }: SearchSectionProps) {
   const [query, setQuery] = useState("");
   const [sortOrder, setSortOrder] = useState<MovieSortOrder>("relevance");
-  // Ordena os filmes da página atual sem mudar a busca nem a paginação do TMDB
-  const sortedResults = useMemo(() => {
-    if (sortOrder === "relevance") return results;
+  const [selectedGenreId, setSelectedGenreId] = useState("");
 
-    return [...results].sort((first, second) => {
+  // Filtra os resultados carregados na página atual pelo gênero selecionado.
+  const filteredResults = useMemo(() => {
+    if (!selectedGenreId) return results;
+
+    const genreId = Number(selectedGenreId);
+    return results.filter((movie) => movie.genre_ids.includes(genreId));
+  }, [results, selectedGenreId]);
+
+  // Ordena os resultados filtrados sem alterar a busca nem a paginação do TMDB.
+  const sortedResults = useMemo(() => {
+    if (sortOrder === "relevance") return filteredResults;
+
+    return [...filteredResults].sort((first, second) => {
       const firstDate = first.release_date || "";
       const secondDate = second.release_date || "";
 
@@ -79,7 +96,7 @@ export function SearchSection({
         ? secondDate.localeCompare(firstDate)
         : firstDate.localeCompare(secondDate);
     });
-  }, [results, sortOrder]);
+  }, [filteredResults, sortOrder]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -154,33 +171,64 @@ export function SearchSection({
         </form>
 
         {/* Filtro para ordenar os resultados sem alterar o campo de busca */}
-        <div className="mt-3 flex justify-end">
-          <label
-            className="flex items-center gap-2 text-sm text-muted"
-            htmlFor="movie-sort"
+        <div className="mt-3 flex flex-nowrap items-center justify-between gap-1.5 sm:flex-wrap sm:justify-end sm:gap-3">
+          <SelectInput
+            id="movie-genre"
+            label="Gênero"
+            value={selectedGenreId}
+            disabled={genresLoading || genres.length === 0}
+            onChange={setSelectedGenreId}
+            options={[
+              {
+                value: "",
+                label: genresLoading ? "Carregando..." : "Todos os gêneros",
+              },
+              ...genres.map((genre) => ({
+                value: String(genre.id),
+                label: genre.name,
+              })),
+            ]}
+          />
+
+          <SelectInput
+            id="movie-sort"
+            label="Ordenar por"
+            value={sortOrder}
+            onChange={(value) => {
+              if (
+                value === "relevance" ||
+                value === "newest" ||
+                value === "oldest"
+              ) {
+                setSortOrder(value);
+              }
+            }}
+            options={[
+              { value: "relevance", label: "Relevância" },
+              { value: "newest", label: "Mais recentes" },
+              { value: "oldest", label: "Mais antigos" },
+            ]}
+          />
+
+          <button
+            type="button"
+            disabled={!selectedGenreId && sortOrder === "relevance"}
+            onClick={() => {
+              setSelectedGenreId("");
+              setSortOrder("relevance");
+            }}
+            className="mb-0.5 shrink-0 whitespace-nowrap rounded-md border border-line px-2 py-2 text-xs text-cream hover:bg-surface disabled:cursor-not-allowed disabled:opacity-50 sm:mb-0 sm:px-3 sm:text-sm"
           >
-            Ordenar por
-            <select
-              id="movie-sort"
-              value={sortOrder}
-              onChange={(event) => {
-                const value = event.target.value;
-                if (
-                  value === "relevance" ||
-                  value === "newest" ||
-                  value === "oldest"
-                ) {
-                  setSortOrder(value);
-                }
-              }}
-              className="rounded-md border border-line bg-surface px-3 py-2 text-cream outline-none focus:border-accent"
-            >
-              <option value="relevance">Relevância</option>
-              <option value="newest">Mais recentes</option>
-              <option value="oldest">Mais antigos</option>
-            </select>
-          </label>
+            <span className="sm:hidden">Limpar</span>
+            <span className="hidden sm:inline">Limpar filtros</span>
+          </button>
         </div>
+
+        {genresError && (
+          <p className="mt-2 text-right text-sm text-danger" role="alert">
+            Não foi possível carregar os gêneros: {genresError}
+          </p>
+        )}
 
         {error && (
           <p className="mt-4 text-left text-sm text-danger" role="alert">
@@ -199,13 +247,14 @@ export function SearchSection({
             <h2 className="mb-4 font-serif text-2xl font-extrabold text-cream">
               Resultados da busca
             </h2>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4">
-              {sortedResults.map((movie) => {
-                const rating = ratings.find(
-                  (item) => item.tmdb_id === movie.id,
-                );
+            {sortedResults.length > 0 ? (
+              <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4">
+                {sortedResults.map((movie) => {
+                  const rating = ratings.find(
+                    (item) => item.tmdb_id === movie.id,
+                  );
 
-                return (
+                  return (
                   <MovieCard
                     key={movie.id}
                     movie={movie}
@@ -213,9 +262,15 @@ export function SearchSection({
                     label={`${rating ? "Ver detalhes de" : "Avaliar"} ${movie.title}`}
                     onClick={() => onSelectMovie(movie)}
                   />
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-muted" aria-live="polite">
+                Nenhum filme deste gênero foi encontrado nesta página. Tente
+                outra página ou escolha “Todos os gêneros”.
+              </p>
+            )}
             {totalPages > 1 && (
               <nav
                 className="mt-8 flex flex-wrap items-center justify-center gap-2"

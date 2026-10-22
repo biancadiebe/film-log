@@ -9,13 +9,16 @@ export type MovieSearchResponsePages = {
   results: MovieSearchResult[]
 }
 
+//Card inicial do filme
 export type MovieSearchResult = {
   id: number
   title: string
   poster_path: string | null
   release_date: string
+  genre_ids: number[]
 }
 
+//Detalhes do filme
 export type MovieDetails = {
   id: number
   title: string
@@ -26,12 +29,14 @@ export type MovieDetails = {
   cast: MovieCastMember[]
 }
 
+//Elenco
 export type MovieCastMember = {
   name: string
   character: string
   profile_path: string | null
 }
 
+//Avaliação
 export type Rating = {
   tmdb_id: number
   title: string
@@ -39,4 +44,10 @@ export type Rating = {
   score: number
   created_at: string
   updated_at: string
+}
+
+//Genero dos filmes
+export type MovieGenre = {
+  id: number
+  name: string
 }

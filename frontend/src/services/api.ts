@@ -1,4 +1,10 @@
-import type { MovieDetails, MovieSearchResult, Rating, MovieSearchResponsePages } from "../data/types";
+import type {
+  MovieDetails,
+  MovieGenre,
+  MovieSearchResult,
+  Rating,
+  MovieSearchResponsePages,
+} from "../data/types";
 
 // API do backend: configure VITE_API_BASE_URL para substituir a URL local de desenvolvimento.
 const API_BASE_URL = (
@@ -77,6 +83,28 @@ export async function getRatings(): Promise<Rating[]> {
     throw new Error("A API retornou uma lista de avaliações inválida.");
   }
   return ratings;
+}
+
+//Função para os generos dos filmes
+function isMovieGenre(value: unknown): value is MovieGenre {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "id" in value &&
+    typeof value.id === "number" &&
+    "name" in value &&
+    typeof value.name === "string"
+  );
+}
+
+export async function getMovieGenres(): Promise<MovieGenre[]> {
+  const genres = await request<unknown>("/movies/genres/");
+
+  if (!Array.isArray(genres) || !genres.every(isMovieGenre)) {
+    throw new Error("A API retornou uma lista de gêneros inválida.");
+  }
+
+  return genres;
 }
 
 export function saveRating(

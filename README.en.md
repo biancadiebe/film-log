@@ -18,7 +18,9 @@ The goal was to build a complete web application that connects a React frontend,
 
 - Search for movies using TMDB and display results with titles, posters, and release dates.
 - Navigate search results with numbered pagination, including previous/next controls and ellipses for long page lists.
-- Sort the current page by relevance, newest release date, or oldest release date; display the release year on movie posters.
+- Filter results by genre, selecting a genre before or after searching, and combine the filter with sorting by relevance, newest release date, or oldest release date. The “Clear filters” button restores the default options.
+- Apply the genre filter to the movies on the current TMDB page; navigating to another page keeps the selected genre and filters the newly loaded results.
+- Display the release year on movie posters.
 - Show loading, empty, and error states during search.
 
 #### Movie details modal
@@ -40,7 +42,7 @@ The goal was to build a complete web application that connects a React frontend,
 
 ### Bonus feature decisions
 
-The original optional requirement is “Filter by Genre or Year.” To address the year-related part, I chose to let users sort results by relevance, newest release date, or oldest release date rather than requiring them to enter a specific year. The cards also display each movie's release year. This approach makes it possible to explore results chronologically without knowing the exact year in advance. Sorting applies only to the movies on the current page; it is not the same as filtering by a specific year, and genre filtering is not available.
+The original optional requirement is “Filter by Genre or Year.” I implemented genre filtering: users can select a genre before searching or apply it afterward to refine the results. The filter can be combined with sorting by relevance, newest release date, or oldest release date, and there is an option to clear the filters. Because search results are paginated by TMDB, the genre is applied to the movies on the current page; when navigating, the selection is kept and applied to the newly loaded page. Sorting by release date and displaying the release year on posters help users explore movies chronologically, but do not replace a filter for a specific year.
 
 Other optional features and improvements were left for future study and development. Given the deadline, I prioritized the quality of the core requirements and selected features, reusing the existing structure and keeping the experience cohesive.
 
@@ -48,7 +50,7 @@ Numbered pagination was chosen over infinite scrolling because a TMDB search can
 
 ### Scope decisions
 
-In addition to the mandatory requirements, I implemented some of the optional features proposed in the assignment, such as numbered pagination and sorting results by release date. Given the deadline, I had to prioritize which bonus features to develop, aiming to deliver a cohesive application with the implemented features working well and integrated into the user experience. Other improvements may be part of a future evolution of the project, which I also intend to use to keep studying and putting new knowledge into practice.
+In addition to the mandatory requirements, I implemented some of the optional features proposed in the assignment, such as numbered pagination, genre filtering, and sorting results by release date. Given the deadline, I had to prioritize which bonus features to develop, aiming to deliver a cohesive application with the implemented features working well and integrated into the user experience. Other improvements may be part of a future evolution of the project, which I also intend to use to keep studying and putting new knowledge into practice.
 
 ## What is being evaluated
 
@@ -62,20 +64,12 @@ In addition to the mandatory requirements, I implemented some of the optional fe
 
 | Area | Technology | How it is used |
 | --- | --- | --- |
-| Frontend | React, TypeScript, Vite | React and TypeScript meet the requested stack and build the interface and its stateful interactions. Vite provides the frontend development server and production build process. |
-| Styling | Tailwind CSS | Styles the responsive interface with utility classes in components, reducing the need to maintain many separate CSS files. It was also chosen as a learning opportunity. |
-| Backend | Python, Django, Django REST Framework | Python meets the requested stack. Django provides the backend structure, while Django REST Framework creates JSON endpoints and validates/serializes ratings. Django was also chosen because it is used by the company and offered a chance to study it in practice. |
-| Database | MongoDB 8, Django MongoDB Backend | Stores movie ratings through Django's model and database integration. |
-| Movie data | TMDB API | Provides movie search results, details, posters, genres, and cast information. |
+| Frontend | React, TypeScript, Vite | React and TypeScript meet the requested stack and build the interface and its stateful interactions. I chose Vite because it provides a fast development server, updates the interface during development, and offers a straightforward production build, meeting the frontend's needs without unnecessary complexity. |
+| Styling | Tailwind CSS | I chose Tailwind CSS as a learning opportunity and for practicality: its utility classes can be applied directly in components to style the responsive interface without creating and maintaining many separate CSS files. |
+| Backend | Python, Django, Django REST Framework | Python meets the requested stack. Django provides the backend structure, while Django REST Framework creates JSON endpoints and validates/serializes ratings. I also chose Django because it is used by the company and offered a chance to study it in practice. |
+| Database | MongoDB 8, Django MongoDB Backend | I chose MongoDB because it is a database I have been studying extensively at university. Using it in FilmLog is a practical way to deepen that knowledge and work with it in different situations. Ratings are represented by a Django model and persisted in MongoDB through Django MongoDB Backend. |
+| Movie data | TMDB API | Provides movie search results, details, posters, genres, and cast information used by the application. |
 | Infrastructure | Docker, Docker Compose, Nginx | Docker meets the assignment's infrastructure requirement. Docker Compose coordinates the frontend, backend, and MongoDB with one command; Nginx serves the built frontend files. |
-
-### Why MongoDB?
-
-I chose MongoDB because it is a database I have been studying extensively at university. Using it in FilmLog gave me a practical way to deepen that knowledge and work with it in a different kind of application. The rating is represented by a Django model and persisted in MongoDB through Django MongoDB Backend.
-
-### Why React, TypeScript, and Vite?
-
-React and TypeScript are part of the assignment requirements. I chose Vite because it provides a fast development server, keeps the interface updated during development, and offers a straightforward production build. It integrates well with this React frontend and meets the project's development and build needs without adding unnecessary complexity.
 
 ## Application flow
 

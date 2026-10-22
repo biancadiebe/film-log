@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import {
   deleteRating,
   getMovieDetails,
+  getMovieGenres,
   getRatings,
   saveRating,
   searchMoviesPages,
 } from "./services/api";
 import type {
   MovieDetails,
+  MovieGenre,
   MovieSearchResult,
   Page,
   Rating,
@@ -47,6 +49,9 @@ export default function App() {
   const [initialScore, setInitialScore] = useState(0);
   const [savingRating, setSavingRating] = useState(false);
   const [modalError, setModalError] = useState<string | null>(null);
+  const [movieGenres, setMovieGenres] = useState<MovieGenre[]>([]);
+  const [genresLoading, setGenresLoading] = useState(true);
+  const [genresError, setGenresError] = useState<string | null>(null);
 
   // Backend: carrega as avaliações salvas quando o aplicativo é iniciado.
   useEffect(() => {
@@ -61,6 +66,26 @@ export default function App() {
       })
       .finally(() => {
         if (isMounted) setRatingsLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  //useEffect que carrega o genero dos filmes
+  useEffect(() => {
+    let isMounted = true;
+
+    getMovieGenres()
+      .then((loadedGenres) => {
+        if (isMounted) setMovieGenres(loadedGenres);
+      })
+      .catch((error: unknown) => {
+        if (isMounted) setGenresError(getErrorMessage(error));
+      })
+      .finally(() => {
+        if (isMounted) setGenresLoading(false);
       });
 
     return () => {
@@ -266,6 +291,9 @@ export default function App() {
               currentPage={searchPage}
               totalPages={totalPages}
               onPageChange={handlePageChange}
+              genres={movieGenres}
+              genresLoading={genresLoading}
+              genresError={genresError}
             />
             {!hasSearched && <EmptyResultsSection />}
           </>

@@ -18,7 +18,9 @@ O objetivo foi desenvolver uma aplicação web completa que conecta um frontend 
 
 - Buscar filmes no TMDB e exibir resultados com títulos, pôsteres e datas de lançamento.
 - Navegar pelos resultados com paginação numerada, incluindo controles de página anterior/próxima e reticências para listas longas.
-- Ordenar os resultados da página atual por relevância, data mais recente ou mais antiga; exibir o ano de lançamento nos pôsteres.
+- Filtrar os resultados por gênero, escolhendo-o antes ou depois da busca, e combinar o filtro com a ordenação por relevância, data mais recente ou mais antiga. O botão “Limpar filtros” restaura as opções padrão.
+- Aplicar o filtro de gênero aos filmes da página atual do TMDB; navegar para outra página mantém o gênero escolhido e filtra os novos resultados carregados.
+- Exibir o ano de lançamento nos pôsteres.
 - Exibir estados de carregamento, resultados vazios e erros durante a busca.
 
 #### Modal de detalhes do filme
@@ -40,7 +42,7 @@ O objetivo foi desenvolver uma aplicação web completa que conecta um frontend 
 
 ### Decisões sobre os bônus
 
-O requisito opcional original é “Filter by Genre or Year”. Para atender à parte relacionada ao ano, optei por oferecer ordenação dos resultados por relevância, data mais recente ou mais antiga, em vez de exigir que a pessoa informe um ano específico. Os cards também exibem o ano de lançamento dos filmes. Essa abordagem permite explorar os resultados cronologicamente sem precisar conhecer previamente o ano exato. A ordenação é aplicada somente aos filmes da página atual; ela não equivale a filtrar por um ano específico nem implementa a filtragem por gênero.
+O requisito opcional original é “Filter by Genre or Year”. Implementei a filtragem por gênero: é possível selecionar um gênero antes de fazer a busca ou aplicá-lo depois para refinar os resultados. O filtro pode ser combinado com a ordenação por relevância, data mais recente ou mais antiga, e há uma opção para limpar os filtros. Como a busca é paginada pelo TMDB, o gênero é aplicado aos filmes da página atual; ao navegar, a seleção é mantida e aplicada à nova página. A ordenação por data e o ano exibido nos pôsteres ajudam a explorar os filmes cronologicamente, mas não substituem um filtro por ano específico.
 
 Os demais recursos opcionais e melhorias que não entraram nesta versão ficaram para estudos e evolução futura. Considerando o prazo, priorizei a qualidade dos requisitos principais e dos recursos selecionados, reaproveitando a estrutura existente e mantendo uma experiência coesa.
 
@@ -48,7 +50,7 @@ A paginação numerada foi escolhida em vez de rolagem infinita porque uma busca
 
 ### Decisões de escopo
 
-Além dos requisitos obrigatórios, implementei alguns dos recursos opcionais propostos no teste, como a paginação numerada e a ordenação dos resultados por data de lançamento. Com o prazo, precisei priorizar quais funcionalidades bônus desenvolver, buscando entregar uma aplicação coesa, com os recursos implementados funcionando bem e integrados à experiência do usuário. Outras melhorias ficaram para uma possível evolução futura do projeto, que também pretendo utilizar para continuar estudando e colocando novos conhecimentos em prática.
+Além dos requisitos obrigatórios, implementei alguns dos recursos opcionais propostos no teste, como a paginação numerada, a filtragem por gênero e a ordenação dos resultados por data de lançamento. Com o prazo, precisei priorizar quais funcionalidades bônus desenvolver, buscando entregar uma aplicação coesa, com os recursos implementados funcionando bem e integrados à experiência do usuário. Outras melhorias ficaram para uma possível evolução futura do projeto, que também pretendo utilizar para continuar estudando e colocando novos conhecimentos em prática.
 
 ## O que está sendo avaliado
 
@@ -62,20 +64,12 @@ Além dos requisitos obrigatórios, implementei alguns dos recursos opcionais pr
 
 | Área | Tecnologia | Como é utilizada |
 | --- | --- | --- |
-| Frontend | React, TypeScript, Vite | React e TypeScript atendem à stack solicitada e são usados para construir a interface e controlar estados e interações. Vite oferece o servidor de desenvolvimento e o processo de build da aplicação frontend. |
-| Estilização | Tailwind CSS | Estiliza a interface responsiva com classes utilitárias diretamente nos componentes, reduzindo a necessidade de manter vários arquivos CSS separados. Também foi escolhido como oportunidade de estudo. |
-| Backend | Python, Django, Django REST Framework | Python atende à stack solicitada. Django fornece a estrutura do backend e Django REST Framework é usado para criar endpoints JSON e validar/serializar avaliações. Django também foi escolhido por ser uma tecnologia utilizada pela empresa e por ser uma oportunidade de estudá-lo na prática. |
-| Banco de dados | MongoDB 8, Django MongoDB Backend | Armazena as avaliações usando a integração de modelos e banco de dados do Django. |
-| Dados de filmes | API do TMDB | Fornece resultados de busca, detalhes, pôsteres, gêneros e informações do elenco. |
+| Frontend | React, TypeScript, Vite | React e TypeScript atendem à stack solicitada e são usados para construir a interface e controlar estados e interações. Escolhi Vite por oferecer um servidor de desenvolvimento rápido, atualização da interface durante o desenvolvimento e um processo direto para gerar os arquivos de produção, atendendo às necessidades do frontend sem acrescentar complexidade desnecessária. |
+| Estilização | Tailwind CSS | Escolhi Tailwind CSS como oportunidade de estudo e por praticidade: suas classes utilitárias aplicadas diretamente nos componentes ajudam a estilizar a interface responsiva sem criar e manter vários arquivos CSS separados. |
+| Backend | Python, Django, Django REST Framework | Python atende à stack solicitada. Django fornece a estrutura do backend e Django REST Framework é usado para criar endpoints JSON e validar/serializar avaliações. Escolhi Django também por ser uma tecnologia utilizada pela empresa e uma oportunidade de estudá-lo na prática. |
+| Banco de dados | MongoDB 8, Django MongoDB Backend | Escolhi MongoDB porque é um banco de dados que estou estudando bastante na faculdade. Usá-lo no FilmLog é uma forma prática de aprofundar meus estudos e desenvolver mais conhecimento em diferentes situações. As avaliações são representadas por um modelo Django e persistidas no MongoDB por meio do Django MongoDB Backend. |
+| Dados de filmes | API do TMDB | Fornece resultados de busca, detalhes, pôsteres, gêneros e informações do elenco consumidos pela aplicação. |
 | Infraestrutura | Docker, Docker Compose, Nginx | Docker atende ao requisito de infraestrutura do teste. Docker Compose coordena frontend, backend e MongoDB em um único comando; Nginx serve os arquivos do frontend compilado. |
-
-### Por que escolhi MongoDB?
-
-Escolhi o MongoDB porque é um banco de dados que estou estudando bastante na faculdade. Usá-lo no FilmLog foi uma forma prática de aprofundar meus estudos e desenvolver mais conhecimento com ele em diferentes situações. A avaliação é representada por um modelo Django e persistida no MongoDB por meio do Django MongoDB Backend.
-
-### Por que escolhi React, TypeScript e Vite?
-
-React e TypeScript fazem parte dos requisitos do teste. Escolhi Vite por oferecer um servidor de desenvolvimento rápido, atualização da interface durante o desenvolvimento e um processo direto para gerar os arquivos de produção. Ele se integra bem ao frontend React deste projeto e atende às necessidades de desenvolvimento e build sem acrescentar complexidade desnecessária.
 
 ## Como a aplicação funciona
 

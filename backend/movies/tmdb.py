@@ -49,10 +49,22 @@ def search_movies(query, page=1):
                 "title": movie["title"],
                 "poster_path": movie["poster_path"],
                 "release_date": movie.get("release_date", ""),
+                "genre_ids": movie.get("genre_ids", []),
             }
             for movie in data["results"]
         ],
     }
+
+#Generos dos filmes
+def get_movie_genres():
+    data = _get("/genre/movie/list")
+    return [
+        {
+            "id": genre["id"],
+            "name": genre["name"],
+        }
+        for genre in data["genres"]
+    ]
 
 #Busca os dados completos de um filme específico, incluindo o elenco
 def get_movie_details(tmdb_id):
