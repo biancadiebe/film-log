@@ -4,7 +4,6 @@ services:
     volumes:
       - mongo-data:/data/db
     healthcheck:
-      # Pergunta ao Mongo se ele responde; só então o backend é iniciado
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
       interval: 5s
       timeout: 5s
@@ -16,8 +15,7 @@ services:
       - "8000:8000"
     environment:
       MONGO_URL: mongodb://mongo:27017
-      # Lê TMDB_API_KEY do .env da raiz; se faltar, para com uma mensagem clara
-      TMDB_API_KEY: ${TMDB_API_KEY:?Set TMDB_API_KEY in the .env file}
+      TMDB_API_KEY: ${TMDB_API_KEY:-}
     depends_on:
       mongo:
         condition: service_healthy
@@ -33,4 +31,4 @@ services:
       - backend
 
 volumes:
-  mongo-data:A
+  mongo-data:
