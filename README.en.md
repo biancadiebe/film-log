@@ -125,9 +125,30 @@ I chose MongoDB because it is a database I have been studying extensively at uni
 
 5. Open **http://localhost:3000** in your browser. The Django API is available at **http://localhost:8000/api**.
 
-The first run may take a few minutes while Docker downloads base images and installs dependencies. Without `-d`, logs are shown in the terminal; keep it open while using the application and press `Ctrl+C` to stop the services.
+The first run may take a few minutes while Docker downloads base images and installs dependencies.
 
-To start the containers in the background, use `docker compose up --build -d`. The `-d` option releases the terminal, but does not rebuild the images. To include recent code or Dockerfile changes, add `--build`, for example: `docker compose up --build -d`. If nothing has changed, use `docker compose up -d` to start the services again. To stop and remove the containers, run `docker compose down`.
+### What do `-d` and `--build` mean?
+
+- `-d` (*detached*) starts the containers in the background and releases the terminal. Without `-d`, logs remain visible in the terminal; press `Ctrl+C` to stop the services.
+- `--build` rebuilds the images before starting the containers. Use it after changing code included in the images or the Dockerfiles.
+
+To build the images and run the application in the background:
+
+```bash
+docker compose up --build -d
+```
+
+If the images are already up to date and you only want to start the services in the background:
+
+```bash
+docker compose up -d
+```
+
+To stop and remove the containers, run:
+
+```bash
+docker compose down
+```
 
 ## REST API
 
