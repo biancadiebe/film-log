@@ -3,17 +3,34 @@ services:
     image: mongo:8.0
     volumes:
       - mongo-data:/data/db
+    healthcheck:
+      # Pergunta ao Mongo se ele responde; só então o backend é iniciado
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   backend:
     build: ./backend
     ports:
       - "8000:8000"
-    env_file:
-      - ./backend/.env
     environment:
       MONGO_URL: mongodb://mongo:27017
+      # Lê TMDB_API_KEY do .env da raiz; se faltar, para com uma mensagem clara
+      TMDB_API_KEY: ${TMDB_API_KEY:?Set TMDB_API_KEY in the .env file}
     depends_on:
-      - mongo
+      mongo:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:8000/api
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
 
 volumes:
-  mongo-data:
+  mongo-data:A

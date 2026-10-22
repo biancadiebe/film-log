@@ -67,6 +67,6 @@ def get_movie_details(tmdb_id):
                 "character": person.get("character", ""),
                 "profile_path": person.get("profile_path"),
             }
-            for person in data.get("credits", {}).get("cast", [])[:15]  
+            for person in data.get("credits", {}).get("cast", [])[:6]  
         ],
     }

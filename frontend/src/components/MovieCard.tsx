@@ -1,30 +1,32 @@
-import { FiFilm, FiStar } from 'react-icons/fi'
-import { posterUrl } from '../data/api'
-import type { Rating } from '../data/types'
+import { FiFilm, FiStar } from "react-icons/fi";
+import { posterUrl } from "../services/api";
+import type { Rating } from "../data/types";
 
-type Movie = { title: string; poster_path: string | null }
+type Movie = { title: string; poster_path: string | null };
 
-type MovieCardProps = {
-  variant?: 'card'
-  movie: Movie
-  score?: Rating['score']
-  label: string
-  onClick: () => void
-  className?: string
-} | {
-  variant: 'poster'
-  movie: Movie
-  className?: string
-}
+type MovieCardProps =
+  | {
+      variant?: "card";
+      movie: Movie;
+      score?: Rating["score"];
+      label: string;
+      onClick: () => void;
+      className?: string;
+    }
+  | {
+      variant: "poster";
+      movie: Movie;
+      className?: string;
+    };
 
 //Cards dos filmes - Poster e titulo + se ter um score cadastrado, aparecem as estrelas
 export function MovieCard(props: MovieCardProps) {
-  const { movie } = props
-  const imageUrl = posterUrl(movie.poster_path)
+  const { movie } = props;
+  const imageUrl = posterUrl(movie.poster_path);
   const posterClassName =
-    props.variant === 'poster'
-      ? props.className ?? ''
-      : 'aspect-2/3 w-full transition-transform duration-200 group-hover:-translate-y-1 group-hover:border-accent'
+    props.variant === "poster"
+      ? (props.className ?? "")
+      : "aspect-2/3 w-full transition-transform duration-200 group-hover:-translate-y-1 group-hover:border-accent";
 
   const poster = (
     <div
@@ -40,18 +42,21 @@ export function MovieCard(props: MovieCardProps) {
           loading="lazy"
         />
       ) : (
-        <div className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+        <div
+          className="absolute inset-0 flex items-center justify-center"
+          aria-hidden="true"
+        >
           <FiFilm className="size-10 text-muted/50" />
         </div>
       )}
     </div>
-  )
+  );
 
-  if (props.variant === 'poster') {
-    return poster
+  if (props.variant === "poster") {
+    return poster;
   }
 
-  const { score, label, onClick } = props
+  const { score, label, onClick } = props;
 
   return (
     <article className="min-w-0">
@@ -74,7 +79,7 @@ export function MovieCard(props: MovieCardProps) {
         </div>
       )}
     </article>
-  )
+  );
 }
 
 export function RatingStars({ score }: { score: number }) {
@@ -87,9 +92,9 @@ export function RatingStars({ score }: { score: number }) {
         <FiStar
           key={index}
           aria-hidden="true"
-          className={`size-4 ${index < score ? 'fill-star text-star' : 'text-line'}`}
+          className={`size-4 ${index < score ? "fill-star text-star" : "text-line"}`}
         />
       ))}
     </div>
-  )
+  );
 }

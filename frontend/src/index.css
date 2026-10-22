@@ -15,3 +15,17 @@
   --font-serif: "Fraunces", serif;
   --font-sans: "Inter", sans-serif;
 }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+input:autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--color-surface) inset;
+  -webkit-text-fill-color: var(--color-cream);
+  caret-color: var(--color-cream);
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  appearance: none;
+}

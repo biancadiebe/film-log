@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { FiX } from 'react-icons/fi'
 import { Button } from './Button'
 import { MovieCard } from './MovieCard'
 import type { MovieSearchResult, Rating } from '../data/types'
@@ -11,6 +12,7 @@ type SearchSectionProps = {
   hasSearched: boolean
   error: string | null
   onSearch: (query: string) => void
+  onClearSearch: () => void
   onSelectMovie: (movie: MovieSearchResult) => void
 }
 
@@ -23,6 +25,7 @@ export function SearchSection({
   hasSearched,
   error,
   onSearch,
+  onClearSearch,
   onSelectMovie,
 }: SearchSectionProps) {
   const [query, setQuery] = useState('')
@@ -81,7 +84,20 @@ export function SearchSection({
             placeholder="Busque por um filme..."
             className="h-12 w-full min-w-0 border-0 bg-transparent p-0 text-base text-cream outline-none placeholder:text-muted/70 sm:h-13.5 sm:text-[21px]"
           />
-          <Button type="submit">
+          {query && (
+            <button
+              className="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full text-muted transition-colors hover:bg-page hover:text-cream focus-visible:outline-2 focus-visible:outline-accent"
+              type="button"
+              aria-label="Limpar busca"
+              onClick={() => {
+                setQuery('')
+                onClearSearch()
+              }}
+            >
+              <FiX className="size-4" aria-hidden="true" />
+            </button>
+          )}
+          <Button className="shrink-0" type="submit">
             {loading ? 'Buscando...' : 'Buscar'}
           </Button>
         </form>
@@ -114,7 +130,7 @@ export function SearchSection({
                     key={movie.id}
                     movie={movie}
                     score={rating?.score}
-                    label={`${rating ? 'Editar avaliação de' : 'Avaliar'} ${movie.title}`}
+                    label={`${rating ? 'Ver detalhes de' : 'Avaliar'} ${movie.title}`}
                     onClick={() => onSelectMovie(movie)}
                   />
                 )
