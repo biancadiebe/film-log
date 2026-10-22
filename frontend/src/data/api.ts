@@ -1,6 +1,6 @@
 import type { MovieDetails, MovieSearchResult, Rating } from './types'
 
-// Backend API: configure VITE_API_BASE_URL to override the local development URL.
+// API do backend: configure VITE_API_BASE_URL para substituir a URL local de desenvolvimento.
 const API_BASE_URL = (
   import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000/api'
 ).replace(/\/+$/, '')

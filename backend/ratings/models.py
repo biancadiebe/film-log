@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
-# Create your models here.
+# Crie seus modelos aqui.
 
 #Model: classe em python que descreve quais dados que são guardados no banco (Cada classe vira uma coleção no banco)
 class Rating(models.Model):

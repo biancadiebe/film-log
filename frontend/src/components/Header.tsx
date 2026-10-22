@@ -14,7 +14,7 @@ export function Header({ activePage, onNavigate }: HeaderProps) {
     }`
 
   return (
-    <header className="flex h-[72px] items-stretch justify-between border-b border-line px-5 sm:h-[87px] sm:px-[max(32px,calc((100%-1478px)/2))]">
+    <header className="flex h-18 items-stretch justify-between border-b border-line px-5 sm:h-21.75 sm:px-[max(32px,calc((100%-1478px)/2))]">
       <a
         className="inline-flex items-center gap-2.5 focus-visible:outline-2 focus-visible:outline-cream focus-visible:outline-offset-4 sm:gap-3"
         href="#inicio"
@@ -22,9 +22,9 @@ export function Header({ activePage, onNavigate }: HeaderProps) {
         onClick={() => onNavigate('buscar')}
       >
         <span className="isolate inline-flex items-center" aria-hidden="true">
-          <span className="mr-[-7px] size-[17px] rounded-full border border-page/45 bg-star sm:size-5" />
-          <span className="mr-[-7px] size-[17px] rounded-full border border-page/45 bg-accent sm:size-5" />
-          <span className="size-[17px] rounded-full border border-page/45 bg-cream sm:size-5" />
+          <span className="-mr-1.75 size-4.25 rounded-full border border-page/45 bg-star sm:size-5" />
+          <span className="-mr-1.75 size-4.25 rounded-full border border-page/45 bg-accent sm:size-5" />
+          <span className="size-4.25 rounded-full border border-page/45 bg-cream sm:size-5" />
         </span>
         <span className="font-serif text-[23px] font-extrabold tracking-[-1.2px] sm:text-[28px]">
           FilmLog
@@ -32,7 +32,7 @@ export function Header({ activePage, onNavigate }: HeaderProps) {
       </a>
 
       <nav
-        className="flex items-stretch gap-[18px] sm:gap-[38px]"
+        className="flex items-stretch gap-4.5 sm:gap-9.5"
         aria-label="Navegação principal"
       >
         <button

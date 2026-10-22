@@ -1,30 +1,24 @@
 import type { Rating } from '../data/types'
-import { RatedMovieCard } from './RatedMovieCard'
+import { MovieCard } from './MovieCard'
 
 type RatedMoviesProps = {
   ratings: Rating[]
   loading: boolean
   error: string | null
-  deletingId: number | null
   onOpenMovie: (rating: Rating) => void
-  onEditMovie: (rating: Rating) => void
-  onDeleteMovie: (rating: Rating) => void
 }
 
-// Backend ratings shown in the Avaliados page; mutations are handled by App.
+//Configura a área do "Avaliados", textos principais e organização dos cards
 export function RatedMovies({
   ratings,
   loading,
   error,
-  deletingId,
   onOpenMovie,
-  onEditMovie,
-  onDeleteMovie,
 }: RatedMoviesProps) {
   return (
     <section
       id="avaliados"
-      className="mx-auto min-h-[calc(100vh-87px)] max-w-[1478px] px-5 pt-12 pb-16 sm:px-6 sm:pt-[66px]"
+      className="mx-auto min-h-[calc(100vh-87px)] max-w-369.5 px-5 pt-12 pb-16 sm:px-6 sm:pt-16.5"
       aria-labelledby="rated-title"
     >
       <div className="flex items-end justify-between gap-4 border-b border-line pb-5">
@@ -60,13 +54,12 @@ export function RatedMovies({
       ) : (
         <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4">
           {ratings.map((rating) => (
-            <RatedMovieCard
+            <MovieCard
               key={rating.tmdb_id}
-              rating={rating}
-              onOpen={onOpenMovie}
-              onEdit={onEditMovie}
-              onDelete={onDeleteMovie}
-              deleting={deletingId === rating.tmdb_id}
+              movie={rating}
+              score={rating.score}
+              label={`Ver detalhes de ${rating.title}`}
+              onClick={() => onOpenMovie(rating)}
             />
           ))}
         </div>

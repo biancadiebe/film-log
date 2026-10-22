@@ -1,28 +1,37 @@
-//modal de detalhes do filme - infos do filme
-import { FiX } from 'react-icons/fi'
+import { FiEdit2, FiTrash2, FiX } from 'react-icons/fi'
 import { posterUrl } from '../data/api'
-import { MoviePoster, RatingStars } from './MoviePoster'
-import type { MovieDetails } from '../data/types'
+import { MovieCard, RatingStars } from './MovieCard'
+import type { MovieDetails, Rating } from '../data/types'
 
 type MovieDetailsModalProps = {
   movie: MovieDetails
   score: number
+  rating: Rating
+  deleting: boolean
+  error: string | null
   onClose: () => void
+  onEdit: () => void
+  onDelete: () => void
 }
 
-// Frontend detail view for movie metadata fetched from the backend.
+//Modal com as informações principais do filme (abre quando clica no card cadastrado)
 export function MovieDetailsModal({
   movie,
   score,
+  rating,
+  deleting,
+  error,
   onClose,
+  onEdit,
+  onDelete,
 }: MovieDetailsModalProps) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-page/80 p-3 backdrop-blur-sm sm:p-6"
-      onClick={onClose}
+      onClick={() => !deleting && onClose()}
     >
       <section
-        className="relative max-h-[calc(100vh-24px)] w-full max-w-[1235px] overflow-y-auto rounded-xl border border-line bg-surface shadow-2xl sm:max-h-[calc(100vh-64px)]"
+        className="relative max-h-[calc(100vh-24px)] w-full max-w-308.75 overflow-y-auto rounded-xl border border-line bg-surface shadow-2xl sm:max-h-[calc(100vh-64px)]"
         role="dialog"
         aria-modal="true"
         aria-labelledby="movie-details-title"
@@ -32,15 +41,17 @@ export function MovieDetailsModal({
           className="absolute top-3 right-3 z-10 flex size-11 cursor-pointer items-center justify-center rounded-full border border-line bg-page/70 text-muted transition-colors hover:text-cream focus-visible:outline-2 focus-visible:outline-cream sm:top-5 sm:right-5"
           type="button"
           aria-label="Fechar detalhes"
+          disabled={deleting}
           onClick={onClose}
         >
           <FiX className="size-5" aria-hidden="true" />
         </button>
 
         <div className="grid gap-7 p-5 sm:gap-10 sm:p-8 lg:grid-cols-[minmax(260px,382px)_1fr] lg:gap-12 lg:p-12">
-          <MoviePoster
+          <MovieCard
+            variant="poster"
             movie={movie}
-            className="mx-auto aspect-[2/3] w-full max-w-[382px] self-start"
+            className="mx-auto aspect-2/3 w-full max-w-95.5 self-start"
           />
 
           <div className="min-w-0">
@@ -82,7 +93,7 @@ export function MovieDetailsModal({
               <div className="mt-5 flex flex-wrap gap-x-6 gap-y-5">
                 {movie.cast.map((person) => (
                   <div
-                    className="flex w-[88px] flex-col items-center text-center"
+                    className="flex w-22 flex-col items-center text-center"
                     key={person.name}
                   >
                     <div
@@ -119,6 +130,33 @@ export function MovieDetailsModal({
                 <span className="text-sm font-bold text-star">
                   {score}/5
                 </span>
+              </div>
+              {error && (
+                <p className="mt-4 text-sm text-danger" role="alert">
+                  {error}
+                </p>
+              )}
+              <div className="mt-5 flex flex-wrap gap-3">
+                <button
+                  className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-md border border-line px-4 py-2 text-sm font-semibold text-cream transition-colors hover:border-accent hover:text-accent focus-visible:outline-2 focus-visible:outline-accent disabled:cursor-wait disabled:opacity-50"
+                  type="button"
+                  aria-label={`Editar avaliação de ${rating.title}`}
+                  disabled={deleting}
+                  onClick={onEdit}
+                >
+                  <FiEdit2 aria-hidden="true" />
+                  Editar avaliação
+                </button>
+                <button
+                  className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-md border border-line px-4 py-2 text-sm font-semibold text-muted transition-colors hover:border-danger hover:text-danger focus-visible:outline-2 focus-visible:outline-danger disabled:cursor-wait disabled:opacity-50"
+                  type="button"
+                  aria-label={`Excluir avaliação de ${rating.title}`}
+                  disabled={deleting}
+                  onClick={onDelete}
+                >
+                  <FiTrash2 aria-hidden="true" />
+                  {deleting ? 'Excluindo...' : 'Excluir avaliação'}
+                </button>
               </div>
             </div>
           </div>

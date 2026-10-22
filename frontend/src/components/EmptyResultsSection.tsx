@@ -1,26 +1,20 @@
 import { FiFilm } from 'react-icons/fi'
 import type { Rating } from '../data/types'
-import { RatedMovieCard } from './RatedMovieCard'
+import { MovieCard } from './MovieCard'
 
 type EmptyResultsSectionProps = {
   ratings: Rating[]
   loading: boolean
   error: string | null
-  deletingId: number | null
   onOpenMovie: (rating: Rating) => void
-  onEditMovie: (rating: Rating) => void
-  onDeleteMovie: (rating: Rating) => void
 }
 
-// Backend ratings replace this frontend empty state after the first saved film.
+//Espaço vazio quando não existe nenhum filme cadastrado, ou quando a busca não retorna nenhum filme
 export function EmptyResultsSection({
   ratings,
   loading,
   error,
-  deletingId,
   onOpenMovie,
-  onEditMovie,
-  onDeleteMovie,
 }: EmptyResultsSectionProps) {
   if (loading && ratings.length === 0) {
     return (
@@ -38,7 +32,7 @@ export function EmptyResultsSection({
     return (
       <section
         id="resultados"
-        className="mx-auto max-w-[1478px] px-5 pt-12 pb-16 sm:px-6 sm:pt-[66px]"
+        className="mx-auto max-w-369.5 px-5 pt-12 pb-16 sm:px-6 sm:pt-16.5"
         aria-labelledby="recent-ratings-title"
       >
         <div className="mb-8 flex items-end justify-between gap-4 border-b border-line pb-5">
@@ -59,13 +53,12 @@ export function EmptyResultsSection({
         )}
         <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4">
           {ratings.map((rating) => (
-            <RatedMovieCard
+            <MovieCard
               key={rating.tmdb_id}
-              rating={rating}
-              onOpen={onOpenMovie}
-              onEdit={onEditMovie}
-              onDelete={onDeleteMovie}
-              deleting={deletingId === rating.tmdb_id}
+              movie={rating}
+              score={rating.score}
+              label={`Ver detalhes de ${rating.title}`}
+              onClick={() => onOpenMovie(rating)}
             />
           ))}
         </div>
@@ -76,7 +69,7 @@ export function EmptyResultsSection({
   return (
     <section
       id="resultados"
-      className="flex min-h-[calc(100vh-72px)] flex-col items-center px-5 pt-12 pb-16 text-center sm:min-h-[calc(100vh-87px)] sm:px-6 sm:pt-[66px]"
+      className="flex min-h-[calc(100vh-72px)] flex-col items-center px-5 pt-12 pb-16 text-center sm:min-h-[calc(100vh-87px)] sm:px-6 sm:pt-16.5"
       aria-labelledby="empty-state-title"
     >
       {error && (
@@ -85,20 +78,20 @@ export function EmptyResultsSection({
         </p>
       )}
       <div
-        className="flex h-[100px] w-[150px] items-center justify-center gap-[25px] border-y border-line/50"
+        className="flex h-25 w-37.5 items-center justify-center gap-6.25 border-y border-line/50"
         aria-hidden="true"
       >
-        <span className="size-[15px] rounded-full bg-star shadow-[0_0_18px_var(--color-star)]" />
-        <FiFilm className="size-[15px] text-accent drop-shadow-[0_0_8px_var(--color-accent)]" />
-        <span className="size-[15px] rounded-full bg-star shadow-[0_0_18px_var(--color-star)]" />
+        <span className="size-3.75 rounded-full bg-star shadow-[0_0_18px_var(--color-star)]" />
+        <FiFilm className="size-3.75 text-accent drop-shadow-[0_0_8px_var(--color-accent)]" />
+        <span className="size-3.75 rounded-full bg-star shadow-[0_0_18px_var(--color-star)]" />
       </div>
       <h2
         id="empty-state-title"
-        className="mt-[40px] max-w-[540px] font-serif text-[32px] leading-[1.2] font-extrabold tracking-[-0.8px] text-cream sm:text-[38px]"
+        className="mt-10 max-w-135 font-serif text-[32px] leading-[1.2] font-extrabold tracking-[-0.8px] text-cream sm:text-[38px]"
       >
         Seu próximo filme está aqui.
       </h2>
-      <p className="mt-[18px] text-base leading-[1.5] text-muted sm:text-lg">
+      <p className="mt-4.5 text-base leading-normal text-muted sm:text-lg">
         Busque por um título ou gênero para começar.
       </p>
     </section>

@@ -1,4 +1,4 @@
-// Frontend types aligned to the JSON returned by the backend endpoints.
+// Tipos do frontend alinhados ao JSON retornado pelos endpoints do backend.
 export type Page = 'buscar' | 'avaliados'
 
 export type MovieSearchResult = {

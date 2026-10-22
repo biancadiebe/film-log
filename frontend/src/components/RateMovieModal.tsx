@@ -12,7 +12,7 @@ type RateMovieModalProps = {
   onSave: (score: number) => void
 }
 
-// Frontend rating dialog; the selected score is saved through the backend API.
+//Janela de avaliação do filme (1-5)
 export function RateMovieModal({
   movie,
   initialScore,
@@ -29,7 +29,7 @@ export function RateMovieModal({
       onClick={onClose}
     >
       <section
-        className="relative max-h-[calc(100vh-24px)] w-full max-w-[620px] overflow-y-auto rounded-xl border border-line bg-surface p-6 shadow-2xl sm:max-h-[calc(100vh-64px)] sm:p-9"
+        className="relative max-h-[calc(100vh-24px)] w-full max-w-155 overflow-y-auto rounded-xl border border-line bg-surface p-6 shadow-2xl sm:max-h-[calc(100vh-64px)] sm:p-9"
         role="dialog"
         aria-modal="true"
         aria-labelledby="rate-movie-title"

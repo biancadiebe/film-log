@@ -39,12 +39,13 @@ export default function App() {
   const [detailsLoading, setDetailsLoading] = useState(false)
 
   const [selectedMovie, setSelectedMovie] = useState<MovieDetails | null>(null)
+  const [selectedRating, setSelectedRating] = useState<Rating | null>(null)
   const [modalMode, setModalMode] = useState<'details' | 'rate' | null>(null)
   const [initialScore, setInitialScore] = useState(0)
   const [savingRating, setSavingRating] = useState(false)
   const [modalError, setModalError] = useState<string | null>(null)
 
-  // Backend: load persisted ratings when the app starts.
+  // Backend: carrega as avaliações salvas quando o aplicativo é iniciado.
   useEffect(() => {
     let isMounted = true
 
@@ -68,15 +69,22 @@ export default function App() {
     if (!selectedMovie) return
 
     function closeOnEscape(event: KeyboardEvent) {
-      if (event.key === 'Escape' && !savingRating) closeModal()
+      if (
+        event.key === 'Escape' &&
+        !savingRating &&
+        deletingId !== selectedRating?.tmdb_id
+      ) {
+        closeModal()
+      }
     }
 
     document.addEventListener('keydown', closeOnEscape)
     return () => document.removeEventListener('keydown', closeOnEscape)
-  }, [selectedMovie, savingRating])
+  }, [selectedMovie, savingRating, deletingId, selectedRating])
 
   function closeModal() {
     setSelectedMovie(null)
+    setSelectedRating(null)
     setModalMode(null)
     setModalError(null)
   }
@@ -129,6 +137,7 @@ export default function App() {
     try {
       const details = await getMovieDetails(rating.tmdb_id)
       setSelectedMovie(details)
+      setSelectedRating(rating)
       setInitialScore(rating.score)
       setModalMode('details')
     } catch (error) {
@@ -175,13 +184,15 @@ export default function App() {
   async function handleDeleteRating(rating: Rating) {
     setDeletingId(rating.tmdb_id)
     setRatingsError(null)
+    setModalError(null)
     try {
       await deleteRating(rating.tmdb_id)
       setRatings((current) =>
         current.filter((item) => item.tmdb_id !== rating.tmdb_id),
       )
+      closeModal()
     } catch (error) {
-      setRatingsError(getErrorMessage(error))
+      setModalError(getErrorMessage(error))
     } finally {
       setDeletingId(null)
     }
@@ -191,10 +202,7 @@ export default function App() {
     ratings,
     loading: ratingsLoading,
     error: ratingsError,
-    deletingId,
     onOpenMovie: handleOpenDetails,
-    onEditMovie: handleEditRating,
-    onDeleteMovie: handleDeleteRating,
   }
 
   return (
@@ -206,6 +214,7 @@ export default function App() {
           <>
             <SearchSection
               results={searchResults}
+              ratings={ratings}
               loading={searchLoading}
               detailsLoading={detailsLoading}
               hasSearched={hasSearched}
@@ -238,11 +247,16 @@ export default function App() {
           onSave={handleSaveRating}
         />
       )}
-      {selectedMovie && modalMode === 'details' && (
+      {selectedMovie && selectedRating && modalMode === 'details' && (
         <MovieDetailsModal
           movie={selectedMovie}
           score={initialScore}
+          rating={selectedRating}
+          deleting={deletingId === selectedRating.tmdb_id}
+          error={modalError}
           onClose={closeModal}
+          onEdit={() => handleEditRating(selectedRating)}
+          onDelete={() => handleDeleteRating(selectedRating)}
         />
       )}
     </div>
