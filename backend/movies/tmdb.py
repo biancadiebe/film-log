@@ -35,7 +35,10 @@ def _get(path, params=None):
 
 #Busca filmes no TMDB pelo padrão digitado e retorna os campos filtrados no front
 def search_movies(query, page=1):
-    data = _get("/search/movie", {"query": query, "page": page, "include_adult": "false"})
+    data = _get(
+        "/search/movie",
+        {"query": query, "page": page, "include_adult": "false"},
+    )
     return {
         "page": data["page"],
         "total_pages": data["total_pages"],
@@ -47,7 +50,7 @@ def search_movies(query, page=1):
                 "poster_path": movie["poster_path"],
                 "release_date": movie.get("release_date", ""),
             }
-            for movie in data["results"]  
+            for movie in data["results"]
         ],
     }
 

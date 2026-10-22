@@ -103,16 +103,16 @@ export default function App() {
       setTotalPages(0);
       setSearchLoading(false);
       setHasSearched(false);
-      setSearchError("Digite o título ou gênero que deseja buscar.");
+      setSearchError("Digite o título que deseja buscar.");
       return;
     }
 
-    const isNewQuery = query !== searchQuery;
+    const isNewSearch = query !== searchQuery;
     setSearchQuery(query);
 
     if (page === 1) {
       setSearchPage(1);
-      if (isNewQuery) setTotalPages(0);
+      if (isNewSearch) setTotalPages(0);
     }
 
     const controller = new AbortController();
@@ -144,13 +144,13 @@ export default function App() {
   function handleClearSearch() {
     searchController.current?.abort();
     searchController.current = null;
+    setSearchQuery("");
     setSearchResults([]);
+    setSearchPage(1);
+    setTotalPages(0);
     setSearchLoading(false);
     setHasSearched(false);
     setSearchError(null);
-    setSearchQuery("");
-    setSearchPage(1);
-    setTotalPages(0);
   }
 
   async function handleSelectSearchResult(movie: MovieSearchResult) {
@@ -260,7 +260,7 @@ export default function App() {
               detailsLoading={detailsLoading}
               hasSearched={hasSearched}
               error={searchError}
-              onSearch={handleSearch}
+              onSearch={(query) => void handleSearch(query)}
               onClearSearch={handleClearSearch}
               onSelectMovie={handleSelectSearchResult}
               currentPage={searchPage}

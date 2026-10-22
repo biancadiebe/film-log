@@ -18,7 +18,6 @@ class MovieSearchView(APIView):
             page = max(1, int(request.query_params.get("page", 1)))
         except ValueError:
             page = 1
-
         try:
             return Response(search_movies(query, page))
         except TMDBError:

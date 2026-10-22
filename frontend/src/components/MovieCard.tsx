@@ -2,7 +2,11 @@ import { FiFilm, FiStar } from "react-icons/fi";
 import { posterUrl } from "../services/api";
 import type { Rating } from "../data/types";
 
-type Movie = { title: string; poster_path: string | null };
+type Movie = {
+  title: string;
+  poster_path: string | null;
+  release_date?: string;
+};
 
 type MovieCardProps =
   | {
@@ -23,6 +27,9 @@ type MovieCardProps =
 export function MovieCard(props: MovieCardProps) {
   const { movie } = props;
   const imageUrl = posterUrl(movie.poster_path);
+  // Pega o ano da data de lançamento para exibir como referência no pôster
+  const releaseYear = movie.release_date?.slice(0, 4);
+  const hasReleaseYear = releaseYear ? /^\d{4}$/.test(releaseYear) : false;
   const posterClassName =
     props.variant === "poster"
       ? (props.className ?? "")
@@ -48,6 +55,14 @@ export function MovieCard(props: MovieCardProps) {
         >
           <FiFilm className="size-10 text-muted/50" />
         </div>
+      )}
+      {hasReleaseYear && (
+        <span
+          className="absolute top-2 right-2 rounded bg-page/90 px-2 py-1 text-xs font-bold text-cream shadow"
+          aria-hidden="true"
+        >
+          {releaseYear}
+        </span>
       )}
     </div>
   );

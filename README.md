@@ -18,6 +18,7 @@ O objetivo foi desenvolver uma aplicação web completa que conecta um frontend 
 
 - Buscar filmes no TMDB e exibir resultados com títulos, pôsteres e datas de lançamento.
 - Navegar pelos resultados com paginação numerada, incluindo controles de página anterior/próxima e reticências para listas longas.
+- Ordenar os resultados da página atual por relevância, data mais recente ou mais antiga; exibir o ano de lançamento nos pôsteres.
 - Exibir estados de carregamento, resultados vazios e erros durante a busca.
 
 #### Modal de detalhes do filme
@@ -37,16 +38,17 @@ O objetivo foi desenvolver uma aplicação web completa que conecta um frontend 
 
 - Executar frontend, backend e banco de dados juntos usando Docker Compose.
 
-### Não implementadas
+### Decisões sobre os bônus
 
-As funcionalidades opcionais abaixo não foram implementadas nesta versão:
+O requisito opcional original é “Filter by Genre or Year”. Para atender à parte relacionada ao ano, optei por oferecer ordenação dos resultados por relevância, data mais recente ou mais antiga, em vez de exigir que a pessoa informe um ano específico. Os cards também exibem o ano de lançamento dos filmes. Essa abordagem permite explorar os resultados cronologicamente sem precisar conhecer previamente o ano exato. A ordenação é aplicada somente aos filmes da página atual; ela não equivale a filtrar por um ano específico nem implementa a filtragem por gênero.
 
-- **Filtros por gênero ou ano:** a busca usa apenas um termo de texto.
-- **Autenticação:** as avaliações não são associadas a contas individuais; qualquer pessoa que use a mesma aplicação e o mesmo banco de dados verá a mesma lista.
-- **Cache:** os dados dos filmes são consultados no TMDB quando necessário e não são armazenados em cache pela aplicação.
-- **Testes automatizados da aplicação:** os módulos de teste do backend ainda são os arquivos padrão do Django, sem testes específicos do projeto.
+Os demais recursos opcionais e melhorias que não entraram nesta versão ficaram para estudos e evolução futura. Considerando o prazo, priorizei a qualidade dos requisitos principais e dos recursos selecionados, reaproveitando a estrutura existente e mantendo uma experiência coesa.
 
-A busca usa paginação numerada fornecida pelo TMDB. A lista de filmes avaliados também tem paginação numerada, feita no frontend com oito cards por página a partir das avaliações carregadas do backend.
+A paginação numerada foi escolhida em vez de rolagem infinita porque uma busca no TMDB pode retornar muitos filmes. Os números deixam a navegação mais visual e organizada e permitem ir diretamente a uma página, em vez de depender do carregamento automático durante a rolagem. Na busca, o backend usa a paginação fornecida pelo TMDB. Na seção de filmes avaliados, o frontend divide as avaliações já recebidas do backend em páginas de oito cards.
+
+### Decisões de escopo
+
+Além dos requisitos obrigatórios, implementei alguns dos recursos opcionais propostos no teste, como a paginação numerada e a ordenação dos resultados por data de lançamento. Com o prazo, precisei priorizar quais funcionalidades bônus desenvolver, buscando entregar uma aplicação coesa, com os recursos implementados funcionando bem e integrados à experiência do usuário. Outras melhorias ficaram para uma possível evolução futura do projeto, que também pretendo utilizar para continuar estudando e colocando novos conhecimentos em prática.
 
 ## O que está sendo avaliado
 
@@ -60,16 +62,20 @@ A busca usa paginação numerada fornecida pelo TMDB. A lista de filmes avaliado
 
 | Área | Tecnologia | Como é utilizada |
 | --- | --- | --- |
-| Frontend | React, TypeScript, Vite | Constrói as telas de busca, detalhes e filmes avaliados. O estado do React controla as requisições, os feedbacks de carregamento e erro e as mudanças nas avaliações. |
-| Estilização | Tailwind CSS | Estiliza a interface responsiva e seus componentes reutilizáveis. |
-| Backend | Python, Django, Django REST Framework | Disponibiliza a API REST da aplicação, valida os dados das avaliações e coordena as requisições ao TMDB. |
+| Frontend | React, TypeScript, Vite | React e TypeScript atendem à stack solicitada e são usados para construir a interface e controlar estados e interações. Vite oferece o servidor de desenvolvimento e o processo de build da aplicação frontend. |
+| Estilização | Tailwind CSS | Estiliza a interface responsiva com classes utilitárias diretamente nos componentes, reduzindo a necessidade de manter vários arquivos CSS separados. Também foi escolhido como oportunidade de estudo. |
+| Backend | Python, Django, Django REST Framework | Python atende à stack solicitada. Django fornece a estrutura do backend e Django REST Framework é usado para criar endpoints JSON e validar/serializar avaliações. Django também foi escolhido por ser uma tecnologia utilizada pela empresa e por ser uma oportunidade de estudá-lo na prática. |
 | Banco de dados | MongoDB 8, Django MongoDB Backend | Armazena as avaliações usando a integração de modelos e banco de dados do Django. |
 | Dados de filmes | API do TMDB | Fornece resultados de busca, detalhes, pôsteres, gêneros e informações do elenco. |
-| Infraestrutura | Docker, Docker Compose, Nginx | Constrói e serve o frontend e inicia os serviços do backend e do MongoDB. |
+| Infraestrutura | Docker, Docker Compose, Nginx | Docker atende ao requisito de infraestrutura do teste. Docker Compose coordena frontend, backend e MongoDB em um único comando; Nginx serve os arquivos do frontend compilado. |
 
 ### Por que escolhi MongoDB?
 
 Escolhi o MongoDB porque é um banco de dados que estou estudando bastante na faculdade. Usá-lo no FilmLog foi uma forma prática de aprofundar meus estudos e desenvolver mais conhecimento com ele em diferentes situações. A avaliação é representada por um modelo Django e persistida no MongoDB por meio do Django MongoDB Backend.
+
+### Por que escolhi React, TypeScript e Vite?
+
+React e TypeScript fazem parte dos requisitos do teste. Escolhi Vite por oferecer um servidor de desenvolvimento rápido, atualização da interface durante o desenvolvimento e um processo direto para gerar os arquivos de produção. Ele se integra bem ao frontend React deste projeto e atende às necessidades de desenvolvimento e build sem acrescentar complexidade desnecessária.
 
 ## Como a aplicação funciona
 
@@ -167,8 +173,8 @@ Desenvolver o FilmLog me ajudou a praticar a conexão de uma interface React/Typ
 
 ## Inteligência artificial e ferramentas de design
 
-- **Claude:** ajudou a estruturar o projeto do backend.
-- **GitHub Copilot (este assistente):** ajudou na montagem do frontend e na correção de eventuais bugs.
+- **Claude:** ajudou a estruturar o projeto como um todo e também contribuiu com a parte do backend.
+- **GitHub Copilot:** ajudou na montagem do frontend e na correção de eventuais bugs.
 - **Figma Make:** ajudou a criar uma base inicial de design para as telas.
 
 Essas ferramentas apoiaram o processo de desenvolvimento; revisei e testei a aplicação resultante e sou responsável por compreender a implementação e as decisões técnicas.
