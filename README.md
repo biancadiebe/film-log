@@ -42,15 +42,17 @@ O objetivo foi desenvolver uma aplicação web completa que conecta um frontend 
 
 ### Decisões sobre os bônus
 
-O requisito opcional original é “Filter by Genre or Year”. Implementei a filtragem por gênero: é possível selecionar um gênero antes de fazer a busca ou aplicá-lo depois para refinar os resultados. O filtro pode ser combinado com a ordenação por relevância, data mais recente ou mais antiga, e há uma opção para limpar os filtros. Como a busca é paginada pelo TMDB, o gênero é aplicado aos filmes da página atual; ao navegar, a seleção é mantida e aplicada à nova página. A ordenação por data e o ano exibido nos pôsteres ajudam a explorar os filmes cronologicamente, mas não substituem um filtro por ano específico.
+#### Requisitos bônus implementados
 
-Os demais recursos opcionais e melhorias que não entraram nesta versão ficaram para estudos e evolução futura. Considerando o prazo, priorizei a qualidade dos requisitos principais e dos recursos selecionados, reaproveitando a estrutura existente e mantendo uma experiência coesa.
+O requisito original propõe filtrar por gênero ou por ano. Para atender à parte relacionada ao gênero, implementei um filtro que pode ser selecionado antes da busca ou aplicado aos resultados depois. Como a busca é paginada pelo TMDB, ele considera apenas os filmes da página atual e continua ativo ao navegar entre páginas.
+
+Para explorar os filmes por ano, optei por oferecer ordenação por relevância, lançamentos mais recentes ou mais antigos, em vez de pedir que a pessoa informe um ano específico. Os cards também exibem o ano de lançamento. Essa abordagem permite explorar os resultados cronologicamente sem exigir que a pessoa saiba previamente o ano do filme; a ordenação por data, porém, não equivale a filtrar por um ano específico e é aplicada aos resultados da página atual. O botão “Limpar filtros” restaura as opções padrão.
 
 A paginação numerada foi escolhida em vez de rolagem infinita porque uma busca no TMDB pode retornar muitos filmes. Os números deixam a navegação mais visual e organizada e permitem ir diretamente a uma página, em vez de depender do carregamento automático durante a rolagem. Na busca, o backend usa a paginação fornecida pelo TMDB. Na seção de filmes avaliados, o frontend divide as avaliações já recebidas do backend em páginas de oito cards.
 
-### Decisões de escopo
+#### Requisitos não implementados
 
-Além dos requisitos obrigatórios, implementei alguns dos recursos opcionais propostos no teste, como a paginação numerada, a filtragem por gênero e a ordenação dos resultados por data de lançamento. Com o prazo, precisei priorizar quais funcionalidades bônus desenvolver, buscando entregar uma aplicação coesa, com os recursos implementados funcionando bem e integrados à experiência do usuário. Outras melhorias ficaram para uma possível evolução futura do projeto, que também pretendo utilizar para continuar estudando e colocando novos conhecimentos em prática.
+Autenticação e cache não foram implementados nesta versão. Considerando o prazo limitado do teste, a prioridade foi entregar os requisitos obrigatórios e desenvolver com qualidade os recursos bônus selecionados, mantendo-os integrados e consistentes com a experiência da aplicação, em vez de incluir mais funcionalidades sem o mesmo nível de atenção. Os demais recursos podem ser considerados em versões futuras, como oportunidades para ampliar a aplicação e aprofundar o estudo das tecnologias utilizadas.
 
 ## O que está sendo avaliado
 

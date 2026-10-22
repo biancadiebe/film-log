@@ -42,15 +42,17 @@ The goal was to build a complete web application that connects a React frontend,
 
 ### Bonus feature decisions
 
-The original optional requirement is “Filter by Genre or Year.” I implemented genre filtering: users can select a genre before searching or apply it afterward to refine the results. The filter can be combined with sorting by relevance, newest release date, or oldest release date, and there is an option to clear the filters. Because search results are paginated by TMDB, the genre is applied to the movies on the current page; when navigating, the selection is kept and applied to the newly loaded page. Sorting by release date and displaying the release year on posters help users explore movies chronologically, but do not replace a filter for a specific year.
+#### Implemented bonus requirements
 
-Other optional features and improvements were left for future study and development. Given the deadline, I prioritized the quality of the core requirements and selected features, reusing the existing structure and keeping the experience cohesive.
+The original requirement proposes filtering by genre or year. To address the genre option, I implemented a filter that can be selected before searching or applied to the results afterward. Since TMDB search results are paginated, it applies only to the movies on the current page and stays active when navigating between pages.
+
+To help users explore movies by year, I chose to offer sorting by relevance, newest releases, or oldest releases instead of asking users to enter a specific year. The cards also display each movie's release year. This approach makes it possible to explore results chronologically without requiring users to know a movie's year in advance; however, sorting by release date is not the same as filtering for a specific year and applies only to the current page. The “Clear filters” button restores the default options.
 
 Numbered pagination was chosen over infinite scrolling because a TMDB search can return many movies. Page numbers make navigation more visible and organized and let users jump directly to a page instead of relying on automatic loading while scrolling. Search uses the pagination provided by TMDB. The rated-movies section divides the ratings already received from the backend into frontend pages of eight cards.
 
-### Scope decisions
+#### Unimplemented bonus requirements
 
-In addition to the mandatory requirements, I implemented some of the optional features proposed in the assignment, such as numbered pagination, genre filtering, and sorting results by release date. Given the deadline, I had to prioritize which bonus features to develop, aiming to deliver a cohesive application with the implemented features working well and integrated into the user experience. Other improvements may be part of a future evolution of the project, which I also intend to use to keep studying and putting new knowledge into practice.
+Authentication and caching were not implemented in this version. Given the assignment's limited timeframe, the priority was to deliver the required features and develop the selected bonus features with quality, keeping them cohesive and consistent with the application experience rather than adding more features without the same level of attention. The remaining features may be considered for future versions as opportunities to expand the application and deepen the study of the technologies used.
 
 ## What is being evaluated
 
